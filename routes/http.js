@@ -10,6 +10,7 @@ var validateGame = function(req) {
   if (!req.session.gameID)      { return null; }
   if (!req.session.playerColor) { return null; }
   if (!req.session.playerName)  { return null; }
+  if (!req.session.flavourText) { return null; }
   if (!req.params.id)           { return null; }
 
   // These must match
@@ -18,7 +19,8 @@ var validateGame = function(req) {
   return {
     gameID      : req.session.gameID,
     playerColor : req.session.playerColor,
-    playerName  : req.session.playerName
+    playerName  : req.session.playerName,
+    flavourText : req.session.flavourText
   };
 };
 
@@ -103,10 +105,14 @@ var startGame = function(req, res) {
     // Create new game
     var gameID = DB.add(validData);
 
+    // Find game details
+    var game = DB.find(gameID);
+
     // Save data to session
     req.session.gameID      = gameID;
     req.session.playerColor = validData.playerColor;
     req.session.playerName  = validData.playerName;
+    req.session.flavourText = game.variant.flavourText;
 
     // Redirect to game page
     res.redirect('/game/'+gameID);
@@ -138,6 +144,7 @@ var joinGame = function(req, res) {
     req.session.gameID      = validData.gameID;
     req.session.playerColor = joinColor;
     req.session.playerName  = validData.playerName;
+    req.session.flavourText = game.variant.flavourText;
 
     // Redirect to game page
     res.redirect('/game/'+validData.gameID);

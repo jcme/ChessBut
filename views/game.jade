@@ -12,7 +12,7 @@ block content
 
     #game
 
-      #title-bar
+      .info-bar
         button#forfeit.btn.btn-sm.btn-default.pull-right Forfeit
         span Game:&nbsp;
         strong #{gameID}
@@ -139,7 +139,12 @@ block content
         span.status.pull-right
         ul.captured-pieces.list-inline
 
-
+      .info-bar
+        span Chess, but:&nbsp;
+        br
+        ul
+          each item in flavourText
+            li= item
 
     #game-over.modal.fade(role="dialog")
       .modal-dialog
