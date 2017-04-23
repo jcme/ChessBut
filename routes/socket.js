@@ -38,11 +38,16 @@ var join = function(gameID) {
     return;
   }
 
+  //Save the player colour
+  this.playerColor = sess.playerColor;
+
   // Add user to a socket.io "room" that matches the game ID
   this.join(gameID);
 
   // Emit the update event to everyone in this room/game
-  IO.sockets.in(gameID).emit('update', game);
+  //IO.sockets.in(gameID).emit('update', game);
+
+  broadcastGameState(game, gameID, this);
 
   console.log(sess.playerName+' joined '+gameID);
 };
@@ -86,7 +91,7 @@ var move = function(data) {
   }
 
   // Emit the update event to everyone in this room/game
-  IO.sockets.in(data.gameID).emit('update', game);
+  broadcastGameState(game, data.gameID, this);
 
   console.log(data.gameID+' '+sess.playerName+': '+data.move);
 };
@@ -129,7 +134,7 @@ var forfeit = function(gameID) {
   }
 
   // Emit the update event to everyone in this room/game
-  IO.sockets.in(gameID).emit('update', game);
+  broadcastGameState(game, gameID, this);
 
   console.log(gameID+' '+sess.playerName+': Forfeit');
 };
@@ -163,6 +168,28 @@ var disconnect = function() {
   console.log(sess.playerName+' left '+sess.gameID);
   console.log('Socket '+this.id+' disconnected');
 };
+
+/**
+ * Broadcast the game state to each player based on color
+ */
+var broadcastGameState = function(game, gameID, socket){
+  //Emit the update event to the opponent
+  var opponentColor;
+  if (socket.playerColor === "white"){
+    opponentColor = "black";
+  }
+  else {
+    opponentColor = "white";
+  }
+  var modifiedGame;
+  modifiedGame = game.variant.beforeSocketUpdateEmit(game, opponentColor);
+  socket.broadcast.to(gameID).emit('update', modifiedGame);
+
+  //Emit the update event to the current player
+  modifiedGame = game.variant.beforeSocketUpdateEmit(game, socket.playerColor);
+  socket.emit('update', modifiedGame);
+}
+
 
 /**
  * Attach route/event handlers for socket.io
