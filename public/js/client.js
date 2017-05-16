@@ -283,6 +283,9 @@ var Client = (function(window) {
         if (move.pieceCode === piece && move.startSquare === square.attr('id')) {
           if (move.captureSquare === move.endSquare) {
             $('#'+move.endSquare).addClass('valid-capture');
+            if($('#variant-info').attr('data-variant-name') === "OnlySeeYourOwnPieces"){
+              $('#'+move.endSquare).addClass('valid-only-see-you-own-pieces-capture');
+            }
           } else {
             $('#'+move.endSquare).addClass('valid-en-passant-capture');
           }

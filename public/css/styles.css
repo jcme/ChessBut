@@ -95,8 +95,9 @@ table { border-collapse: collapse; }
 
 #board .selected                        { color: #049cdb;                   }
 #board .valid-move:before               { color: #46a546; content: "\25cf"; }
-#board .valid-capture:before            { color: #46a546;                   }
-#board .valid-en-passant-capture:before { color: #46a546; content: "\25cf"; }
+#board .valid-capture:before            { color: #a54646; content: "\25cf"; }
+#board .valid-only-see-you-own-pieces-capture   {content: "\25cf";          }
+#board .valid-en-passant-capture:before { color: #a54646;                   }
 #board .valid-castle:before             { color: #46a546; content: "\25cf"; }
 
 /*
